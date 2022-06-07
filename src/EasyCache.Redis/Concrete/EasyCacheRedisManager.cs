@@ -1,9 +1,6 @@
 ﻿using EasyCache.Core.Abstractions;
 using Microsoft.Extensions.Caching.Distributed;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -56,11 +53,23 @@ namespace EasyCache.Redis.Concrete
             distributedCache.SetString(key, str, option);
         }
 
+        public void Set<T>(string key, T value)
+        {
+            var str = JsonSerializer.Serialize<T>(value);
+            distributedCache.SetString(key, str);
+        }
+
         public virtual async Task SetAsync<T>(string key, T value, TimeSpan expireTime)
         {
             var str = JsonSerializer.Serialize<T>(value);
             var option = new DistributedCacheEntryOptions().SetSlidingExpiration(expireTime);
             await distributedCache.SetStringAsync(key, str, option);
+        }
+
+        public async Task SetAsync<T>(string key, T value)
+        {
+            var str = JsonSerializer.Serialize<T>(value);
+            await distributedCache.SetStringAsync(key, str);
         }
     }
 }

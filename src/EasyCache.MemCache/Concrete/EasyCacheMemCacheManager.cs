@@ -1,8 +1,6 @@
 ﻿using EasyCache.Core.Abstractions;
 using Enyim.Caching;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace EasyCache.MemCache.Concrete
@@ -49,9 +47,19 @@ namespace EasyCache.MemCache.Concrete
             memcachedClient.Set(key, value, (int)expireTime.TotalSeconds);
         }
 
+        public virtual void Set<T>(string key, T value)
+        {
+            memcachedClient.Set(key, value, 30);
+        }
+
         public virtual async Task SetAsync<T>(string key, T value, TimeSpan expireTime)
         {
             await memcachedClient.SetAsync(key, value, (int)expireTime.TotalSeconds);
+        }
+
+        public virtual async Task SetAsync<T>(string key, T value)
+        {
+            await memcachedClient.SetAsync(key, value, 30);
         }
     }
 }

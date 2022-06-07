@@ -11,6 +11,23 @@ namespace EasyCache.Core.Abstractions
     public interface IEasyCacheService
     {
         /// <summary>
+        /// Set Cache without expireTime
+        /// </summary>
+        /// <typeparam name="T">
+        /// Object to be cached
+        /// </typeparam>
+        /// <param name="key">
+        /// Uniqe cache key
+        /// </param>
+        /// <param name="value">
+        /// Object to be cached
+        /// </param>
+        /// <param name="expireTime">
+        /// Cache Expire time
+        /// </param>
+        void Set<T>(string key, T value);
+
+        /// <summary>
         /// Set Cache
         /// </summary>
         /// <typeparam name="T">
@@ -26,6 +43,26 @@ namespace EasyCache.Core.Abstractions
         /// Cache Expire time
         /// </param>
         void Set<T>(string key, T value, TimeSpan expireTime);
+
+        /// <summary>
+        /// Set cache without expireTime async version
+        /// </summary>
+        /// <typeparam name="T">
+        /// Object to be cached
+        /// </typeparam>
+        /// <param name="key">
+        /// Uniqe cache key
+        /// </param>
+        /// <param name="value">
+        /// Object to be cached
+        /// </param>
+        /// <param name="expireTime">
+        /// Cache Expire time</param>
+        /// <returns>
+        /// System.Threading.Tasks.Task
+        /// </returns>
+        Task SetAsync<T>(string key, T value);
+
         /// <summary>
         /// Set cache async version
         /// </summary>

@@ -48,10 +48,19 @@ namespace EasyCache.Memory.Concrete
             memoryCache.Set(key, value, expireTime);
         }
 
-        public virtual Task SetAsync<T>(string key, T value, TimeSpan expireTime)
+        public virtual void Set<T>(string key, T value)
         {
-            Task.Run(() => Set<T>(key, value, expireTime));
-            return Task.CompletedTask;
+            memoryCache.Set(key, value);
+        }
+
+        public virtual async Task SetAsync<T>(string key, T value, TimeSpan expireTime)
+        {
+            await Task.Run(() => Set<T>(key, value, expireTime));
+        }
+
+        public virtual async Task SetAsync<T>(string key, T value)
+        {
+            await Task.Run(() => Set<T>(key, value));
         }
     }
 }

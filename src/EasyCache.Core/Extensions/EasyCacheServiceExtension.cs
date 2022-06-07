@@ -11,6 +11,19 @@ namespace EasyCache.Core.Extensions
     /// </summary>
     public static class EasyCacheServiceExtension
     {
+        public static T GetAndSet<T>(this IEasyCacheService easyCacheService, string key, Func<T> getResult)
+        {
+            var data = easyCacheService.Get<T>(key);
+
+            if (data == null)
+            {
+                data = getResult();
+                easyCacheService.Set(key, data);
+            }
+
+            return data;
+        }
+
         public static T GetAndSet<T>(this IEasyCacheService easyCacheService, string key, Func<T> getResult, TimeSpan expireTime)
         {
             var data = easyCacheService.Get<T>(key);
@@ -22,6 +35,19 @@ namespace EasyCache.Core.Extensions
             }
 
             return data;
+        }
+
+        public static Task<T> GetAndSetAsync<T>(this IEasyCacheService easyCacheService, string key, Func<Task<T>> getResult)
+        {
+            var data = easyCacheService.Get<T>(key);
+
+            if (data == null)
+            {
+                data = getResult().GetAwaiter().GetResult();
+                easyCacheService.Set(key, data);
+            }
+
+            return Task.FromResult(data);
         }
 
         public static Task<T> GetAndSetAsync<T>(this IEasyCacheService easyCacheService, string key, Func<Task<T>> getResult, TimeSpan expireTime)
