@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace EasyCache.Redis.Concrete
@@ -22,34 +22,18 @@ namespace EasyCache.Redis.Concrete
         }
         public virtual T Get<T>(string key)
         {
-            BinaryFormatter binaryFormatter = new BinaryFormatter();
-            using (var memoryStream = new MemoryStream())
-            {
-                var bytes = distributedCache.Get(key);
-                if (bytes is null) return default(T);
+            var str = distributedCache.GetString(key);
+            if (str is null) return default(T);
 
-                memoryStream.Write(bytes, 0, bytes.Length);
-
-                memoryStream.Seek(0, SeekOrigin.Begin);
-
-                return (T)binaryFormatter.Deserialize(memoryStream);
-            }
+            return JsonSerializer.Deserialize<T>(str);
         }
 
         public virtual async Task<T> GetAsync<T>(string key)
         {
-            BinaryFormatter binaryFormatter = new BinaryFormatter();
-            using (var memoryStream = new MemoryStream())
-            {
-                var bytes = await distributedCache.GetAsync(key);
-                if (bytes is null) return default(T);
+            var str = await distributedCache.GetStringAsync(key);
+            if (str is null) return default(T);
 
-                memoryStream.Write(bytes, 0, bytes.Length);
-
-                memoryStream.Seek(0, SeekOrigin.Begin);
-
-                return (T)binaryFormatter.Deserialize(memoryStream);
-            }
+            return JsonSerializer.Deserialize<T>(str);
         }
 
         public virtual void Remove<T>(string key)
@@ -61,31 +45,22 @@ namespace EasyCache.Redis.Concrete
 
         public virtual async Task RemoveAsync<T>(string key)
         {
-            var data = await distributedCache.GetAsync(key);
-            if (data != null)
-                await distributedCache.RemoveAsync(key);
+            var str = distributedCache.GetAsync(key);
+            if (str != null) await distributedCache.RemoveAsync(key);
         }
 
         public virtual void Set<T>(string key, T value, TimeSpan expireTime)
         {
-            BinaryFormatter bf = new BinaryFormatter();
-            using (var ms = new MemoryStream())
-            {
-                bf.Serialize(ms, value);
-                var option = new DistributedCacheEntryOptions().SetSlidingExpiration(expireTime);
-                distributedCache.Set(key, ms.ToArray(), option);
-            }
+            var str = JsonSerializer.Serialize<T>(value);
+            var option = new DistributedCacheEntryOptions().SetSlidingExpiration(expireTime);
+            distributedCache.SetString(key, str, option);
         }
 
         public virtual async Task SetAsync<T>(string key, T value, TimeSpan expireTime)
         {
-            BinaryFormatter bf = new BinaryFormatter();
-            using (var ms = new MemoryStream())
-            {
-                bf.Serialize(ms, value);
-                var option = new DistributedCacheEntryOptions().SetSlidingExpiration(expireTime);
-                await distributedCache.SetAsync(key, ms.ToArray(), option);
-            }
+            var str = JsonSerializer.Serialize<T>(value);
+            var option = new DistributedCacheEntryOptions().SetSlidingExpiration(expireTime);
+            await distributedCache.SetStringAsync(key, str, option);
         }
     }
 }
