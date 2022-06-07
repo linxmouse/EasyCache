@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<Authors>furkandeveloper</Authors>
+		<Authors>linxmouse</Authors>
 		<Description>This library provides dynamically cache operation for Redis.</Description>
 		<PackageIcon> </PackageIcon>
-		<PackageProjectUrl>https://github.com/furkandeveloper/EasyCache</PackageProjectUrl>
-		<RepositoryUrl>https://github.com/furkandeveloper/EasyCache</RepositoryUrl>
+		<PackageProjectUrl>http://gitea.dbugs.work/linxmouse/EasyCache/src/branch/linxyou</PackageProjectUrl>
+		<RepositoryUrl>http://gitea.dbugs.work/linxmouse/EasyCache/src/branch/linxyou</RepositoryUrl>
 		<RepositoryType>Public</RepositoryType>
 		<PackageTags>cache, easy-cache, cache-manager, dotnet, dotnetcore, net5</PackageTags>
 		<PackageIcon>easyCache.png</PackageIcon>
